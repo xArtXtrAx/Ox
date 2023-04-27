@@ -1,19 +1,30 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class ButtonSpawner : MonoBehaviour
 {
-    public Button buttonPrefab;
-    public Transform contentTransform;
+    public GameObject buttonPrefab;
+    public RectTransform content;
+    public float buttonHeight;
+    public float buttonSpacing;
+    private List<GameObject> buttons = new List<GameObject>();
 
-    void Start()
+    public void SpawnButton()
     {
-        SpawnButton();
+        GameObject newButton = Instantiate(buttonPrefab, content);
+        buttons.Add(newButton);
+
+        RectTransform rectTransform = newButton.GetComponent<RectTransform>();
+        rectTransform.anchoredPosition = new Vector2(0, -buttons.Count * (buttonHeight + buttonSpacing));
     }
 
-    void SpawnButton()
+    public void RemoveButtons()
     {
-        Button newButton = Instantiate(buttonPrefab, contentTransform);
-        newButton.onClick.AddListener(SpawnButton);
+        foreach (GameObject button in buttons)
+        {
+            Destroy(button);
+        }
+        buttons.Clear();
     }
 }
