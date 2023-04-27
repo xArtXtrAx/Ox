@@ -45,12 +45,20 @@ public class ClickerGameController : MonoBehaviour
     void SpawnLeftButton()
     {
         Button newButton = Instantiate(leftButtonPrefab, leftScrollView.content);
-        newButton.transform.SetAsFirstSibling();
+        RectTransform rt = newButton.GetComponent<RectTransform>();
+        rt.anchorMin = new Vector2(0.5f, 1);
+        rt.anchorMax = new Vector2(0.5f, 1);
+        rt.pivot = new Vector2(0.5f, 1);
+        rt.anchoredPosition = new Vector2(0, -leftScrollView.content.childCount * rt.sizeDelta.y);
     }
 
     void SpawnRightButton()
     {
         Button newButton = Instantiate(rightButtonPrefab, rightScrollView.content);
-        newButton.transform.SetAsFirstSibling();
+        RectTransform rt = newButton.GetComponent<RectTransform>();
+        rt.anchorMin = new Vector2(0.5f, 1);
+        rt.anchorMax = new Vector2(0.5f, 1);
+        rt.pivot = new Vector2(0.5f, 1);
+        rt.anchoredPosition = new Vector2(0, -rightScrollView.content.childCount * rt.sizeDelta.y);
     }
 }
