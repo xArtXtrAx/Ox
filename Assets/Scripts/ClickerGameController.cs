@@ -42,6 +42,9 @@ public class ClickerGameController : MonoBehaviour
 
     private float elapsedTime = 0f;
 
+    private float clicksAccumulator = 0f;
+
+
     void Start()
     {
         mainButton.onClick.AddListener(() => IncrementClickCounter(clicksPerClick));
@@ -63,16 +66,12 @@ public class ClickerGameController : MonoBehaviour
         {
             if (clicksPerSecond > 0)
             {
-                for (int i = 0; i < clicksPerSecond; i++)
-                {
-                    IncrementClickCounter(1);
-                    yield return new WaitForSeconds(1f / clicksPerSecond);
-                }
+                clicksAccumulator += clicksPerSecond * Time.deltaTime;
+                int clicksToAdd = Mathf.FloorToInt(clicksAccumulator);
+                clicksAccumulator -= clicksToAdd;
+                IncrementClickCounter(clicksToAdd);
             }
-            else
-            {
-                yield return new WaitForSeconds(1f);
-            }
+            yield return null;
         }
     }
 
@@ -189,6 +188,17 @@ public class ClickerGameController : MonoBehaviour
             colors[(leftUpgradeFactor + 1) % colors.Length],
             (float)(leftUpgradeFactor % colorSteps) / colorSteps);
         newButton.GetComponent<Image>().color = buttonColor;
+    }
+
+    Color ColorLerp(Color a, Color b, float t)
+    {
+        Color[] colors = { Color.red, Color.yellow, Color.green, Color.cyan, Color.blue, Color.magenta };
+        int numColors = colors.Length;
+        t *= numColors;
+        int index = Mathf.FloorToInt(t) % numColors;
+        t -= Mathf.Floor(t);
+
+        return Color.Lerp(colors[index], colors[(index + 1) % numColors], t);
     }
 }
 
