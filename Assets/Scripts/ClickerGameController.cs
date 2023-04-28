@@ -13,6 +13,10 @@ public class ClickerGameController : MonoBehaviour
     public ScrollRect leftScrollView;
     public ScrollRect rightScrollView;
 
+    public Color startColor = Color.red;
+    public Color endColor = Color.blue;
+    public int colorSteps = 10;
+
     public Button leftButtonPrefab;
     public Button rightButtonPrefab;
 
@@ -64,7 +68,7 @@ public class ClickerGameController : MonoBehaviour
                 leftUpgradeFactor++;
             }
 
-            if (clickCounter % 100 == 0)
+            if (clickCounter % 10 == 0)
             {
                 SpawnRightButton();
                 rightUpgradeFactor++;
@@ -108,6 +112,17 @@ public class ClickerGameController : MonoBehaviour
         rt.anchoredPosition = new Vector2(0, -leftScrollView.content.childCount * rt.sizeDelta.y);
         int upgradeAmount = leftUpgradeFactor;
         newButton.onClick.AddListener(() => { clicksPerClick += upgradeAmount; UpdateClicksPerClickDisplay(); });
+        
+        // Update the button text and image
+        TextMeshProUGUI upgradeAmountText = newButton.GetComponentInChildren<TextMeshProUGUI>();
+        upgradeAmountText.text = $"Upgrade Clicks by {upgradeAmount}";
+
+        Image upgradeLevelImage = newButton.transform.Find("UpgradeLevelImage").GetComponent<Image>();
+        upgradeLevelImage.sprite = Resources.Load<Sprite>($"UpgradeIcons/Icon{leftUpgradeFactor}");
+
+        // Update the button color
+        Color buttonColor = Color.Lerp(startColor, endColor, (float)(leftUpgradeFactor % colorSteps) / colorSteps);
+        newButton.GetComponent<Image>().color = buttonColor;
     }
 
     void SpawnRightButton()
@@ -120,5 +135,17 @@ public class ClickerGameController : MonoBehaviour
         rt.anchoredPosition = new Vector2(0, -rightScrollView.content.childCount * rt.sizeDelta.y);
         float upgradeAmount = rightUpgradeFactor;
         newButton.onClick.AddListener(() => { clicksPerSecond += upgradeAmount; UpdateClicksPerSecondCounter(); });
+
+        // Update the button text and image
+        TextMeshProUGUI upgradeAmountText = newButton.GetComponentInChildren<TextMeshProUGUI>();
+        upgradeAmountText.text = $"Upgrade CPS by {upgradeAmount}";
+
+        Image upgradeLevelImage = newButton.transform.Find("UpgradeLevelImage").GetComponent<Image>();
+        upgradeLevelImage.sprite = Resources.Load<Sprite>($"UpgradeIcons/Icon{rightUpgradeFactor}");
+
+        // Update the button color
+        Color buttonColor = Color.Lerp(startColor, endColor, (float)(rightUpgradeFactor % colorSteps) / colorSteps);
+        newButton.GetComponent<Image>().color = buttonColor;
     }
 }
+
