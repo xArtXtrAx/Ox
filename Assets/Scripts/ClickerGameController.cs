@@ -15,7 +15,7 @@ public class ClickerGameController : MonoBehaviour
 
     public Color startColor = Color.red;
     public Color endColor = Color.blue;
-    public int colorSteps = 5;
+    public int colorSteps = 20;
     private Color[] colors = new Color[]
         {
         Color.red,
@@ -43,6 +43,9 @@ public class ClickerGameController : MonoBehaviour
     private float elapsedTime = 0f;
 
     private float clicksAccumulator = 0f;
+
+    private int rightButtonsSpawned = 0;
+    private int leftButtonsSpawned = 0;
 
 
     void Start()
@@ -75,6 +78,16 @@ public class ClickerGameController : MonoBehaviour
         }
     }
 
+    public int GetClickCounter()
+    {
+        return clickCounter;
+    }
+
+    public void ModifyCPSMultiplier(float multiplier)
+    {
+        clicksPerSecond *= multiplier;
+        UpdateClicksPerSecondCounter();
+    }
 
     void UpdateClicksPerClickDisplay()
     {
@@ -135,10 +148,10 @@ public class ClickerGameController : MonoBehaviour
         upgradeLevelText.text = leftUpgradeFactor.ToString();
 
         // Update the button color
-        Color buttonColor = Color.Lerp(colors[leftUpgradeFactor % colors.Length], 
-            colors[(leftUpgradeFactor + 1) % colors.Length], 
-            (float)(leftUpgradeFactor % colorSteps) / colorSteps);
+        Color buttonColor = ColorLerp(0f, 1f, (float)leftButtonsSpawned / colorSteps);
         newButton.GetComponent<Image>().color = buttonColor;
+
+        leftButtonsSpawned++;
     }
 
     void SpawnRightButton()
@@ -163,21 +176,25 @@ public class ClickerGameController : MonoBehaviour
         upgradeLevelText.text = rightUpgradeFactor.ToString();
 
         // Update the button color
-        Color buttonColor = Color.Lerp(colors[leftUpgradeFactor % colors.Length],
-            colors[(leftUpgradeFactor + 1) % colors.Length],
-            (float)(leftUpgradeFactor % colorSteps) / colorSteps);
+        Color buttonColor = ColorLerp(0f, 1f, (float)rightButtonsSpawned / colorSteps);
+
         newButton.GetComponent<Image>().color = buttonColor;
+
+        rightButtonsSpawned++;
     }
 
-    Color ColorLerp(Color a, Color b, float t)
+    Color ColorLerp(float start, float end, float t)
     {
         Color[] colors = { Color.red, Color.yellow, Color.green, Color.cyan, Color.blue, Color.magenta };
         int numColors = colors.Length;
-        t *= numColors;
-        int index = Mathf.FloorToInt(t) % numColors;
-        t -= Mathf.Floor(t);
 
-        return Color.Lerp(colors[index], colors[(index + 1) % numColors], t);
+        float range = end - start;
+        float adjustedT = (t * range + start) * numColors;
+
+        int index = Mathf.FloorToInt(adjustedT) % numColors;
+        float lerpFactor = adjustedT - Mathf.Floor(adjustedT);
+
+        return Color.Lerp(colors[index], colors[(index + 1) % numColors], lerpFactor);
     }
 }
 
