@@ -15,7 +15,17 @@ public class ClickerGameController : MonoBehaviour
 
     public Color startColor = Color.red;
     public Color endColor = Color.blue;
-    public int colorSteps = 10;
+    public int colorSteps = 5;
+    private Color[] colors = new Color[]
+        {
+        Color.red,
+        new Color(1, 0.5f, 0),
+        Color.yellow,
+        Color.green,
+        Color.blue,
+        new Color(0.5f, 0, 1),
+        Color.red
+        };
 
     public Button leftButtonPrefab;
     public Button rightButtonPrefab;
@@ -26,6 +36,12 @@ public class ClickerGameController : MonoBehaviour
     public int rightUpgradeFactor = 1;
     private int clickCounter = 0;
 
+    public Material glowingMaterial;
+    public float glowDuration = 10f;
+    public float glowIntensity = 5f;
+
+    private float elapsedTime = 0f;
+
     void Start()
     {
         mainButton.onClick.AddListener(() => IncrementClickCounter(clicksPerClick));
@@ -34,6 +50,12 @@ public class ClickerGameController : MonoBehaviour
         UpdateClicksPerSecondCounter();
     }
 
+    void Update()
+    {
+        elapsedTime += Time.deltaTime;
+        float glow = Mathf.PingPong(elapsedTime / glowDuration, 1f) * glowIntensity;
+        glowingMaterial.SetColor("_EmissionColor", Color.white * glow);
+    }
 
     IEnumerator ClicksPerSecondUpdate()
     {
@@ -131,8 +153,13 @@ public class ClickerGameController : MonoBehaviour
         Image upgradeLevelImage = newButton.transform.Find("UpgradeLevelImage").GetComponent<Image>();
         upgradeLevelImage.sprite = Resources.Load<Sprite>($"UpgradeIcons/Icon{leftUpgradeFactor}");
 
+        TextMeshProUGUI upgradeLevelText = newButton.transform.Find("UpgradeLevelText").GetComponent<TextMeshProUGUI>();
+        upgradeLevelText.text = leftUpgradeFactor.ToString();
+
         // Update the button color
-        Color buttonColor = Color.Lerp(startColor, endColor, (float)(leftUpgradeFactor % colorSteps) / colorSteps);
+        Color buttonColor = Color.Lerp(colors[leftUpgradeFactor % colors.Length], 
+            colors[(leftUpgradeFactor + 1) % colors.Length], 
+            (float)(leftUpgradeFactor % colorSteps) / colorSteps);
         newButton.GetComponent<Image>().color = buttonColor;
     }
 
@@ -154,8 +181,13 @@ public class ClickerGameController : MonoBehaviour
         Image upgradeLevelImage = newButton.transform.Find("UpgradeLevelImage").GetComponent<Image>();
         upgradeLevelImage.sprite = Resources.Load<Sprite>($"UpgradeIcons/Icon{rightUpgradeFactor}");
 
+        TextMeshProUGUI upgradeLevelText = newButton.transform.Find("UpgradeLevelText").GetComponent<TextMeshProUGUI>();
+        upgradeLevelText.text = rightUpgradeFactor.ToString();
+
         // Update the button color
-        Color buttonColor = Color.Lerp(startColor, endColor, (float)(rightUpgradeFactor % colorSteps) / colorSteps);
+        Color buttonColor = Color.Lerp(colors[leftUpgradeFactor % colors.Length],
+            colors[(leftUpgradeFactor + 1) % colors.Length],
+            (float)(leftUpgradeFactor % colorSteps) / colorSteps);
         newButton.GetComponent<Image>().color = buttonColor;
     }
 }
