@@ -108,27 +108,6 @@ public class ClickerGameController : MonoBehaviour
         }
     }
 
-
-    /*
-
-    void IncrementClickCounter()
-    {
-        clickCounter++;
-        UpdateClickCounterText();
-
-        if (clickCounter % 10 == 0)
-        {
-            SpawnLeftButton();
-        }
-
-        if (clickCounter % 100 == 0)
-        {
-            SpawnRightButton();
-        }
-    }
-
-    */
-
     void UpdateClickCounterText()
     {
         clickCounterText.text = $"Clicks: {clickCounter}";
