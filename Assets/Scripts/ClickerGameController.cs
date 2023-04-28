@@ -39,8 +39,11 @@ public class ClickerGameController : MonoBehaviour
     {
         while (true)
         {
-            IncrementClickCounter((int)clicksPerSecond);
-            yield return new WaitForSeconds(1f);
+            for (int i = 0; i < clicksPerSecond; i++)
+            {
+                IncrementClickCounter(1);
+                yield return new WaitForSeconds(1f / clicksPerSecond);
+            }
         }
     }
 
