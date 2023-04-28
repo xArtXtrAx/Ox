@@ -24,11 +24,12 @@ public class ClickerGameController : MonoBehaviour
 
     void Start()
     {
-        mainButton.onClick.AddListener(IncrementClickCounter);
+        mainButton.onClick.AddListener(() => IncrementClickCounter(clicksPerClick));
         StartCoroutine(ClicksPerSecondUpdate());
         UpdateClicksPerClickDisplay();
         UpdateClicksPerSecondCounter();
     }
+
 
     IEnumerator ClicksPerSecondUpdate()
     {
@@ -57,13 +58,13 @@ public class ClickerGameController : MonoBehaviour
 
         if (incrementAmount == clicksPerClick)
         {
-            if (clickCounter % 100 == 0)
+            if (clickCounter % 10 == 0)
             {
                 SpawnLeftButton();
                 leftUpgradeFactor++;
             }
 
-            if (clickCounter % 1000 == 0)
+            if (clickCounter % 100 == 0)
             {
                 SpawnRightButton();
                 rightUpgradeFactor++;
